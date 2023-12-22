@@ -1,11 +1,15 @@
 {
-  "name": "hyperline-client",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
+  "name": "hyperline-nodejs-client",
+  "version": "0.0.2",
+  "description": "The Hyperline Client Library, built with NestJs offers a full suite of functionalities for SaaS platforms, enabling efficient management of billing, customer data, subscriptions, and more. It supports promise-based and observable-based programming styles.",
+  "author": "carisey81@gmail.com (@cariz)",
+  "private": false,
+  "license": "ISC",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bebity/hyperline-nodejs-client.git"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
