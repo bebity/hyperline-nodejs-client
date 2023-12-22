@@ -1,0 +1,592 @@
+import { NestFactory } from '@nestjs/core';
+import { HyperlineClientModule } from './hyperline-client.module';
+import { Config, HyperlineClientOptions } from './types/client.type';
+import { CustomersRepository } from './repositories/customers.repository';
+import { AnalyticsRepository } from './repositories/analytics.repository';
+import { BillableEventsRepository } from './repositories/billable-events.repository';
+import { CompaniesRepository } from './repositories/companies.repository';
+import { CouponsRepository } from './repositories/coupons.repository';
+import { Integration } from './namespaces/integration.namespace';
+import { IntegrationsRepository } from './repositories/integrations.repository';
+import { InvoicesRepository } from './repositories/invoices.repository';
+import { OAuth2Repository } from './repositories/o-auth-2.repository';
+import { PaymentsRepository } from './repositories/payments.repository';
+import { PlansRepository } from './repositories/plans.repository';
+import { PriceConfigurationsRepository } from './repositories/price-configurations.repository';
+import { ProductsRepository } from './repositories/products.repository';
+import { SubscriptionsV2Repository } from './repositories/subscriptions-v2.repository';
+import { ThirdPartyAppsRepository } from './repositories/third-party-apps.repository';
+import { WalletsRepository } from './repositories/wallets.repository';
+import { WebhooksRepository } from './repositories/webhooks.repository';
+import { HttpService } from '@nestjs/axios';
+import { Customer } from './namespaces/customer.namespace';
+import { Coupon } from './namespaces/coupon.namespace';
+import { Invoice } from './namespaces/invoice.namespace';
+import { Product } from './namespaces/product.namespace';
+import { Payment } from './namespaces/payment.namespace';
+import { PriceConfiguration } from './namespaces/price-configuration.namespace';
+import { SubscriptionV2 } from './namespaces/subscription-v2.namespace';
+import { ThirdPartyApp } from './namespaces/third-party-app.namespace';
+import { Wallet } from './namespaces/wallet.namespace';
+
+// test_30d2e3e64e777712c29e2b1220477719eb41fa05f90ede287c6bcb19b4365daa
+
+export class HyperlineClient {
+  context: {
+    app: HyperlineClientModule;
+    options: HyperlineClientOptions;
+    config: Config;
+    http: HttpService;
+  };
+  analytics: AnalyticsRepository;
+  billable_events: BillableEventsRepository;
+  companies: CompaniesRepository;
+  coupons: CouponsRepository;
+  customers: CustomersRepository;
+  integrations: IntegrationsRepository;
+  invoices: InvoicesRepository;
+  o_auth2: OAuth2Repository;
+  payments: PaymentsRepository;
+  plans: PlansRepository;
+  price_configurations: PriceConfigurationsRepository;
+  products: ProductsRepository;
+  subscriptions_v2: SubscriptionsV2Repository;
+  third_party_integrations: ThirdPartyAppsRepository;
+  wallets: WalletsRepository;
+  webhooks: WebhooksRepository;
+}
+
+async function create_hyperline_client(
+  options: HyperlineClientOptions,
+): Promise<HyperlineClient> {
+  const app = await NestFactory.createApplicationContext(
+    HyperlineClientModule.forRoot(options),
+  );
+  return {
+    context: {
+      app,
+      options,
+      config: app.get('CONFIG'),
+      http: app.get(HttpService),
+    },
+    analytics: app.get(AnalyticsRepository),
+    billable_events: app.get(BillableEventsRepository),
+    companies: app.get(CompaniesRepository),
+    coupons: app.get(CouponsRepository),
+    customers: app.get(CustomersRepository),
+    integrations: app.get(IntegrationsRepository),
+    invoices: app.get(InvoicesRepository),
+    o_auth2: app.get(OAuth2Repository),
+    payments: app.get(PaymentsRepository),
+    plans: app.get(PlansRepository),
+    price_configurations: app.get(PriceConfigurationsRepository),
+    products: app.get(ProductsRepository),
+    subscriptions_v2: app.get(SubscriptionsV2Repository),
+    third_party_integrations: app.get(ThirdPartyAppsRepository),
+    wallets: app.get(WalletsRepository),
+    webhooks: app.get(WebhooksRepository),
+  };
+}
+
+(async () => {
+  const client = await create_hyperline_client({
+    environment: 'sandbox',
+    api_key:
+      'test_30d2e3e64e777712c29e2b1220477719eb41fa05f90ede287c6bcb19b4365daa',
+    events_ingestion_api_auth: {
+      // optional
+      // required for use events_ingestion_api
+      username: 'test',
+      password: 'test',
+    },
+  });
+
+  //   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //   le client peut etre construit avec la fonction create_hyperline_client qui prend en parametre un objet de type HyperlineClientOptions
+
+  //   create_hyperline_client(options)
+
+  //   ou alors si comme dans nestjs vous etes dans un environement Rxjs, vous pouvez utiliser injecter le module dans vos imports et utiliser tout les Repositories:
+
+  //   @Module({
+  //     imports: [HyperlineClientModule.forRoot(options)],
+  //   })
+
+  //   ////
+
+  //   dans les options events_ingestion_api_auth sert a utilliser 'BillableEvents' sur l'api events_ingestion_api
+
+  // ////
+
+  //   All methods return a promise and an observale (if you want to use observables)
+
+  // const response = client.customers.list();
+
+  // with promise:
+  // await response.promise();
+
+  // with observable:
+  // response.observable.subscribe((data) => {
+  //   console.log(data);
+  // });
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create customer
+  // const input: Customer.CreateInput = {
+  //   name: 'John Doe',
+  //   currency: 'EUR',
+  //   // ... other fields
+  // };
+  // const new_customer = await client.customers.create(input).promise();
+  // console.log('new_customer', new_customer);
+
+  // get customer
+  // const customer = await client.customers.get('cus_jL5yS-fXRm-ZFQ').promise();
+  // console.log('customer', customer);
+
+  // update customer
+  // const input: Customer.UpdateInput = {
+  //   name: 'John Doe',
+  //   // ... other fields
+  // };
+  // const updated_customer = await client.customers
+  //   .update('CUSTOMER ID', input)
+  //   .promise();
+  // console.log('updated_customer', updated_customer);
+
+  // list customers
+  // const customers = await client.customers
+  //   .list({
+  //     status__in: [Customer.StatusEnum.inactive, Customer.StatusEnum.archived],
+  //   })
+  //   .promise();
+  // console.log('customers', customers);
+
+  // get customer portal url
+  // const portal_url = await client.customers
+  //   .get_portal_url('cus_l5yctheYN-sAtD')
+  //   .promise();
+  // console.log('portal_url', portal_url);
+
+  // archive customer
+  // const archived_customer = await client.customers
+  //   .archive('cus_l5yctheYN-sAtD')
+  //   .promise();
+  // console.log('archived_customer', archived_customer);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // list companies
+  // const companies = await client.companies.list().promise();
+  // console.log('companies', companies);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create coupon
+
+  // const input: Coupon.CreateInput = {
+  //   name: 'Coupon 1',
+  //   description: 'coupon_1 etc..',
+  //   expiration_date: '2021-10-10T00:00:00Z',
+  //   redemption_limit: 1,
+  //   type: 'amount', // Coupon.TypesEnum.amount,
+  //   discount_amount: 100,
+  //   currency: 'EUR',
+  // };
+  // const new_coupon = await client.coupons.create(input).promise();
+  // console.log('new_coupon', new_coupon);
+
+  // get coupon
+  // const coupon = await client.coupons.get('cou_qDEKXunKO3VkJG').promise();
+  // console.log('coupon', coupon);
+
+  // list coupons
+  // const coupons = await client.coupons
+  //   .list(/* { take: 10, skip: 5 } */)
+  //   .promise();
+  // console.log('coupons', coupons);
+
+  // update coupon
+  // const updated_coupon = await client.coupons
+  //   .update('cou_qDEKXunKO3VkJG', {
+  //     name: 'Coupon 1 updated',
+  //     description: 'coupon_1 etc.. updated',
+  //     expiration_date: '2021-10-10T00:00:00Z',
+  //     redemption_limit: 1,
+  //     type: 'amount', // Coupon.TypesEnum.amount,
+  //     discount_amount: 100,
+  //     currency: 'EUR',
+  //   })
+  //   .promise();
+  // console.log('updated_coupon', updated_coupon);
+
+  // delete coupon
+  // const deleted_coupon = await client.coupons
+  //   .delete('cou_qDEKXunKO3VkJG')
+  //   .promise();
+  // console.log('deleted_coupon', deleted_coupon);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // integrations create componenets token
+  // const token = await client.integrations
+  //   .create_component_token('cus_jL5yS-fXRm-ZFQ')
+  //   .promise();
+  // console.log('token', token);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create product one
+  // const input: Product.CreateInput = {
+  //   name: 'Product 1',
+  //   description: 'Product 1 etc..',
+  //   type: 'flat_fee',
+  //   is_available_on_demand: true,
+  //   is_available_on_subscription: true,
+  //   price_configurations: [
+  //     {
+  //       name: 'Price configuration 1',
+  //       currency: 'EUR',
+  //       type: 'fee',
+  //       prices: [
+  //         {
+  //           type: 'fee',
+  //           amount: 100,
+  //           interval: 'once',
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // };
+  // const product = await client.products.create(input).promise();
+  // console.log('product', product); // itm_k7uyTPlfmeRJyu
+
+  // get product
+  // const product = await client.products.get('itm_k7uyTPlfmeRJyu').promise();
+  // console.log('product', product);
+
+  // list products
+  // const products = await client.products
+  //   .list(/* { take: 10, skip: 5 } */)
+  //   .promise();
+  // console.log('products', products);
+
+  // update product
+  // const updated_product = await client.products
+  //   .update('itm_k7uyTPlfmeRJyu', {
+  //     name: 'Product 1 updated',
+  //     description: 'Product 1 etc.. updated',
+  //     properties: {},
+  //   })
+  //   .promise();
+  // console.log('updated_product', updated_product);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create one off invoice
+  // const input: Invoice.CreateOneOffInput = {
+  //   customer_id: 'cus_jL5yS-fXRm-ZFQ',
+  //   currency: 'EUR',
+  //   status: 'to_pay',
+  //   // reference: 'ref_1',
+  //   purchase_order: 'po_1',
+  //   tax_rate: 20,
+  //   payment_method_strategy: 'external',
+  //   emitted_at: '2021-10-10T00:00:00Z',
+  //   due_at: '2021-10-10T00:00:00Z',
+  //   // settled_at: '2021-10-10T00:00:00Z',
+  //   line_items: [
+  //     {
+  //       product_id: 'itm_k7uyTPlfmeRJyu',
+  //       name: 'Product 1',
+  //       description: 'Product 1 etc..',
+  //       units_count: 1,
+  //       unit_amount: 100,
+  //       period_start: '2021-10-10T00:00:00Z',
+  //       period_end: '2021-10-10T00:00:00Z',
+  //     },
+  //   ],
+  // };
+  // const invoice = await client.invoices.create_one_off(input).promise();
+  // console.log('invoice', invoice); // inv_wCvSrczCoTxa7s
+
+  // get invoice
+  // const invoice = await client.invoices.get('inv_wCvSrczCoTxa7s').promise();
+  // console.log('invoice', invoice);
+
+  // list invoices
+  // const invoices = await client.invoices
+  //   .list(/* { take: 10, skip: 5, ... } */)
+  //   .promise();
+  // console.log('invoices', invoices);
+
+  // download invoice
+  // const invoice = await client.invoices
+  //   .download('inv_wCvSrczCoTxa7s', './invoice.pdf')
+  //   .promise();
+  // console.log('invoice', invoice);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create payment
+  // const input: Payment.CreateInput.Input = {
+  //   type: 'one_time',
+  //   customer_id: 'cus_jL5yS-fXRm-ZFQ',
+  //   items: [
+  //     {
+  //       id: 'itm_k7uyTPlfmeRJyu',
+  //       name: 'Product 1',
+  //       amount: 100,
+  //     },
+  //   ],
+  //   purchase_order: 'po_1',
+  //   charging_method: 'immediately',
+  // };
+
+  // const payment = await client.payments.create(input).promise();
+  // console.log('payment', payment);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // // list plans
+  // const plans = await client.plans.list().promise();
+  // console.log('plans', plans);
+
+  // get plan plan_vJerGfZbuUSYFH
+  // const plan = await client.plans.get('plan_vJerGfZbuUSYFH').promise();
+  // console.log('plan', plan);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // price configurations => update prices
+  // const input: PriceConfiguration.UpdatePricesInput = [
+  //   {
+  //     type: 'fee',
+  //     amount: 100,
+  //     interval: 'once',
+  //   },
+  // ];
+  // const price_configuration = await client.price_configurations
+  //   .update_prices('prc_1', input)
+  //   .promise();
+  // console.log('price_configuration', price_configuration);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create subscription
+
+  // const input: SubscriptionV2.CreateInput = {
+  //   customer_id: 'cus_jL5yS-fXRm-ZFQ',
+  //   purchase_order: 'po_1',
+  //   commitment_interval: {
+  //     period: 'months',
+  //     count: 1,
+  //   },
+  //   payment_method_strategy: 'external',
+  //   renew_automatically: true,
+  //   starts_at: '2021-10-10T00:00:00Z',
+  //   trial_ends_at: '2021-10-10T00:00:00Z',
+  //   trial_delay_first_invoice: true,
+  //   activation_strategy: 'start_date',
+  //   available_payment_method_types: ['card'],
+  //   cancel_at: '2021-10-10T00:00:00Z',
+  //   cancellation_strategy: 'charge_prorata',
+  //   cancellation_amount: 100,
+  //   checkout_session: {
+  //     send_to: {
+  //       email: 'aaa@email.com',
+  //       message: 'hello',
+  //     },
+  //     redirect_url: 'https://my-app.com',
+  //   },
+  //   plan_id: 'plan_vJerGfZbuUSYFH',
+  //   // billing_plan_id: 'plan_vJerGfZbuUSYFH',
+  //   coupons: [
+  //     {
+  //       id: 'cou_qDEKXunKO3VkJG',
+  //       repeat: 'once',
+  //       expires_at: '2021-10-10T00:00:00Z',
+  //       apply_at: '2021-10-10T00:00:00Z',
+  //       product_ids: ['itm_k7uyTPlfmeRJyu'],
+  //     },
+  //   ],
+  //   products: [
+  //     {
+  //       id: 'itm_k7uyTPlfmeRJyu',
+  //       name: 'Product 1',
+  //       description: 'Product 1 etc..',
+  //       description_display_interval_dates: true,
+  //       payment_interval: {
+  //         period: 'months',
+  //         count: 1,
+  //       },
+  //       payment_schedule: 'start',
+  //       price: {
+  //         type: 'fee',
+  //         amount: 100,
+  //       },
+  //       // count: 1,
+  //       // unit_name: 'unit',
+  //       // min_committed_count: 1,
+  //       // min_amount: 100,
+  //       // max_amount: 100,
+  //       // metering_interval_type: 'custom',
+  //       // metering_interval: {
+  //       //   period: 'months',
+  //       //   count: 1,
+  //       // },
+  //       // metering_interval_start_at: '2021-10-10T00:00:00Z',
+  //       // bill_usage_difference: true,
+  //     },
+  //   ],
+  //   properties: {},
+  // };
+  // const subscription = await client.subscriptions_v2.create(input).promise();
+  // console.log('subscription', subscription);
+
+  // get subscription
+  // const subscription = await client.subscriptions_v2
+  //   .get('sub_WmDSbDwR2kc15Z')
+  //   .promise();
+  // console.log('subscription', subscription);
+
+  // list subscriptions
+  // const subscriptions = await client.subscriptions_v2
+  //   .list(/* { take: 10, skip: 5, ... } */)
+  //   .promise();
+  // console.log('subscriptions', subscriptions);
+
+  // refresh seat products
+  // const subscription = await client.subscriptions_v2
+  //   .refresh_seat_products('sub_WmDSbDwR2kc15Z')
+  //   .promise();
+  // console.log('subscription', subscription);
+
+  // create subscription update
+  // const input: SubscriptionV2.CreateUpdateInput.Input = {
+  //   application_schedule: 'immediately',
+  //   payment_schedule: 'immediately',
+  //   calculation_method: 'pro_rata',
+  //   type: 'add_item',
+  //   payload: {
+  //     product_id: 'itm_k7uyTPlfmeRJyu',
+  //     count: 1,
+  //     billing_interval_period: 'months',
+  //     billing_interval_count: 1,
+  //     product_name: 'Product 1',
+  //     product_description: 'Product 1 etc..',
+  //     start_or_end: 'start',
+  //     // display_interval_dates_in_description: true,
+  //     prices: [
+  //       {
+  //         type: 'fee',
+  //         amount: 100,
+  //       },
+  //     ],
+  //     type: 'fee',
+  //   },
+  // };
+  // const subscription = await client.subscriptions_v2
+  //   .create_update('sub_WmDSbDwR2kc15Z', input)
+  //   .promise();
+  // console.log('subscription', subscription);
+
+  // cancel subscription
+  // const subscription = await client.subscriptions_v2
+  //   .cancel('sub_WmDSbDwR2kc15Z', {
+  //     cancel_at: '2021-10-10T00:00:00Z',
+  //     pro_rata: true,
+  //   })
+  //   .promise();
+  // console.log('subscription', subscription);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // // create app
+  // const input: ThirdPartyApp.CreateInput = {
+  //   name: 'App 1',
+  //   description: 'App 1 etc..',
+  //   logo_uri: 'https://my-app.com/logo.png',
+  //   callbacks: ['https://my-app.com'],
+  // };
+  // const app = await client.third_party_integrations.create(input).promise();
+  // console.log('app', app);
+
+  // list apps
+  // const apps = await client.third_party_integrations.list().promise();
+  // console.log('apps', apps);
+
+  // delete app
+  // const app = await client.third_party_integrations.delete('app_1').promise();
+  // console.log('app', app);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // create wallet
+  // const input: Wallet.CreateInput = {
+  //   customer_id: 'cus_jL5yS-fXRm-ZFQ',
+  // };
+  // const wallet = await client.wallets.create(input).promise();
+  // console.log('wallet', wallet);
+
+  // get wallet
+  // const wallet = await client.wallets.get('wal_1').promise();
+  // console.log('wallet', wallet);
+
+  // list wallets
+  // const wallets = await client.wallets
+  //   .list({
+  //     customer_id: 'cus_jL5yS-fXRm-ZFQ',
+  //   })
+  //   .promise();
+  // console.log('wallets', wallets);
+
+  // update wallet
+  // const wallet = await client.wallets
+  //   .update('wal_UD2K4KJL5VDz4s', {
+  //     state: 'active',
+  //   })
+  //   .promise();
+  // console.log('wallet', wallet);
+
+  // load wallet
+  // const wallet = await client.wallets
+  //   .load('wal_UD2K4KJL5VDz4s', {
+  //     free_credits: 100,
+  //     paid_credits: 0,
+  //   })
+  //   .promise();
+  // console.log('wallet', wallet);
+
+  // get transactions
+  // const transactions = await client.wallets
+  //   .get_transactions('wal_UD2K4KJL5VDz4s')
+  //   .promise();
+  // console.log('transactions', transactions);
+
+  // get wallet settings
+  // const settings = await client.wallets.get_settings().promise();
+  // console.log('settings', settings);
+
+  // update wallet settings
+  // const settings = await client.wallets
+  //   .update_settings({
+  //     allow_free_credits: true,
+  //     allow_topup_on_portal: true,
+  //     unit_credit_prices: [
+  //       {
+  //         currency: 'EUR',
+  //         amount: 100,
+  //       },
+  //     ],
+  //   })
+  //   .promise();
+  // console.log('settings', settings);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // get webhook messages
+  // const messages = await client.webhooks.get_messages().promise();
+  // console.log('messages', messages);
+})();
