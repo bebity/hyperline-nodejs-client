@@ -1,3 +1,6 @@
 src
 .git
 tuto2.txt
+.prettierrc
+.eslintrc.js
+nest-cli.json

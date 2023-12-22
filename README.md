@@ -6,6 +6,14 @@ The [Hyperline](https://www.hyperline.co/) Client Library offers a full suite of
 
 ## Setup and Initialization
 
+### Install
+NPM: https://www.npmjs.com/package/@bebity.io/hyperline-nodejs-client
+```bash
+npm install @bebity.io/hyperline-nodejs-client
+pnpm install @bebity.io/hyperline-nodejs-client
+yarn add @bebity.io/hyperline-nodejs-client
+```
+
 ### With function
 Initialize the client using `create_hyperline_client` function, which requires an object of type `HyperlineClientOptions`.
 
