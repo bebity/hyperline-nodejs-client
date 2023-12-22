@@ -1,7 +1,8 @@
 
 # Hyperline Node.js Client
 ![enter image description here](https://cdn.tech.eu/uploads/2023/06/hyperline1-822.png)
-The Hyperline Client Library offers a full suite of functionalities for SaaS platforms, enabling efficient management of billing, customer data, subscriptions, and more. It supports promise-based and observable-based programming styles.
+The [Hyperline](https://www.hyperline.co/) Client Library offers a full suite of functionalities for SaaS platforms, enabling efficient management of billing, customer data, subscriptions, and more. It supports promise-based and observable-based programming styles.
+[Hyperline documentation](https://docs.hyperline.co/docs/introduction/welcome)
 
 ## Setup and Initialization
 
