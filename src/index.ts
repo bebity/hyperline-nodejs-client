@@ -5,3 +5,4 @@ export * from './repositories';
 export * from './namespaces';
 export * from './injects';
 export * from './config';
+export * from './services/hyperline.service';
