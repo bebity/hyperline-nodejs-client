@@ -270,7 +270,7 @@ export namespace SubscriptionV2 {
     trial_delay_first_invoice?: boolean | null;
 
     /** Strategy used to activate the subscription. */
-    activation_strategy?:
+    activation_strategy:
       | ActivationStrategiesEnum
       | keyof typeof ActivationStrategiesEnum
       | null;

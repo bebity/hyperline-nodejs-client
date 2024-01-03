@@ -33,7 +33,7 @@ export class HyperlineService {
     public readonly plans: PlansRepository,
     public readonly priceConfigurations: PriceConfigurationsRepository,
     public readonly products: ProductsRepository,
-    public readonly subscriptionsV2: SubscriptionsV2Repository,
+    public readonly subscriptions_v2: SubscriptionsV2Repository,
     public readonly thirdPartyApps: ThirdPartyAppsRepository,
     public readonly wallets: WalletsRepository,
     public readonly webhooks: WebhooksRepository,
