@@ -20,11 +20,10 @@ import {
   CustomersRepository,
 } from './repositories';
 import { HttpService } from '@nestjs/axios';
-import { HyperlineService } from './services/hyperline.service';
 
 export class HyperlineClient {
   context: {
-    app: HyperlineClientModule;
+    // app: HyperlineClientModule;
     options: HyperlineClientOptions;
     config: Config;
     http: HttpService;
@@ -55,11 +54,26 @@ export async function create_hyperline_client(
   );
   return {
     context: {
-      app,
+      // app,
       options,
       config: app.get('CONFIG'),
       http: app.get(HttpService),
     },
-    ...app.get(HyperlineService),
+    analytics: app.get(AnalyticsRepository),
+    billable_events: app.get(BillableEventsRepository),
+    companies: app.get(CompaniesRepository),
+    coupons: app.get(CouponsRepository),
+    customers: app.get(CustomersRepository),
+    integrations: app.get(IntegrationsRepository),
+    invoices: app.get(InvoicesRepository),
+    o_auth2: app.get(OAuth2Repository),
+    payments: app.get(PaymentsRepository),
+    plans: app.get(PlansRepository),
+    price_configurations: app.get(PriceConfigurationsRepository),
+    products: app.get(ProductsRepository),
+    subscriptions_v2: app.get(SubscriptionsV2Repository),
+    third_party_integrations: app.get(ThirdPartyAppsRepository),
+    wallets: app.get(WalletsRepository),
+    webhooks: app.get(WebhooksRepository),
   };
 }
